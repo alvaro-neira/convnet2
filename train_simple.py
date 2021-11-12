@@ -15,7 +15,6 @@ sys.path.append(str(pathlib.Path().absolute()))
 import tensorflow as tf
 from models import simple
 from models import alexnet
-from models import resnet
 import datasets.data as data
 import utils.configuration as conf
 import utils.losses as losses
@@ -82,9 +81,9 @@ if __name__ == '__main__' :
     else:
         model = simple.SimpleModel(configuration.get_number_of_classes())
         process_fun = imgproc.process_mnist    
-    process_fun = imgproc.process_image
+            
     #resnet_50
-    model = resnet.ResNet([3,4,6,3],[64,128,256,512], configuration.get_number_of_classes(), use_bottleneck = False)
+    #model = resnet.ResNet([3,4,6,3],[64,128,256,512], configuration.get_number_of_classes(), use_bottleneck = True)
     #build the model indicating the input shape    
     input_image = tf.keras.Input((input_shape[0], input_shape[1], input_shape[2]), name = 'input_image')     
     model(input_image)    
