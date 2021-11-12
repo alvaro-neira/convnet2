@@ -83,7 +83,7 @@ if __name__ == '__main__' :
         model = simple.SimpleModel(configuration.get_number_of_classes())
         process_fun = imgproc.process_mnist
 
-    #resnet_50
+    #resnet_50. If use_bottleneck = False, then it is resnet_34
     model = resnet.ResNet([3,4,6,3],[64,128,256,512], configuration.get_number_of_classes(), use_bottleneck = False)
     #build the model indicating the input shape
     input_image = tf.keras.Input((input_shape[0], input_shape[1], input_shape[2]), name = 'input_image')
