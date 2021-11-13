@@ -230,11 +230,11 @@ class ResNet(tf.keras.Model):
     def call(self, inputs, training):
         x = inputs
         x = self.backbone(x, training)    
-        x = self.avg_pool(x)                
-        x = tf.keras.layers.Flatten()(x)                        
-        x = self.classifier(x)
+        x = self.avg_pool(x)
         return x
-    
+        # x = tf.keras.layers.Flatten()(x)
+        # x = self.classifier(x)
+
 class ResNetFeatureVector(tf.keras.Model):        
     #does not need number_of_classes
     def __init__(self, block_sizes, filters, use_bottleneck = False, se_factor = 0, **kwargs) :

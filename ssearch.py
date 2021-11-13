@@ -22,22 +22,19 @@ class SSearch :
         self.input_shape =  np.fromfile(shape_file, dtype=np.int32)
         self.mean_image = np.fromfile(mean_file, dtype=np.float32)
         self.mean_image = np.reshape(self.mean_image, self.input_shape)
-       
-        #loading classifier model
-        model = resnet.ResNet([3,4,6,3],[64,128,256,512], self.configuration.get_number_of_classes(), se_factor = 0)
-        input_image = tf.keras.Input((self.input_shape[0], self.input_shape[1], self.input_shape[2]), name = 'input_image')     
-        model(input_image)    
+
+        # loading classifier model
+        model = resnet.ResNet([3, 4, 6, 3], [64, 128, 256, 512], self.configuration.get_number_of_classes(),
+                              se_factor=0)
+        input_image = tf.keras.Input((self.input_shape[0], self.input_shape[1], self.input_shape[2]),
+                                     name='input_image')
+        model(input_image)
         model.summary()
-        model.load_weights(self.configuration.get_checkpoint_file(), by_name = True, skip_mismatch = True)
-        #create the sim-model with a customized layer    
-        #you can change output_layer_name                
-        output_layer_name = 'global_average_pooling2d'
-        output = model.get_layer(output_layer_name).output                
-        self.sim_model = tf.keras.Model(model.input, output)        
-        self.sim_model.summary()            
+        model.load_weights(self.configuration.get_checkpoint_file(), by_name=True, skip_mismatch=True)
+        self.sim_model = model
         print('sim_model was loaded OK')
-        #defining process arch
-        self.process_fun =  imgproc.process_image
+        # defining process arch
+        self.process_fun = imgproc.process_sketch
         #loading catalog
         self.ssearch_dir = os.path.join(self.configuration.get_data_dir(), 'ssearch')
         catalog_file = os.path.join(self.ssearch_dir, 'catalog.txt')        
@@ -86,12 +83,12 @@ class SSearch :
     def search(self, im_query):
         assert self.enable_search, 'search is not allowed'
         q_fv = self.compute_features(im_query, expand_dims = True)
-        #sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
-        #sim = np.reshape(sim, (-1))
+        sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
+        sim = np.reshape(sim, (-1))
         #it seems that Euclidean performs better than cosine
         d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis = 1))
-        #idx_sorted = np.argsort(-sim)        
-        idx_sorted = np.argsort(d)
+        idx_sorted = np.argsort(-sim)
+        # idx_sorted = np.argsort(d)
         return idx_sorted[:90]
         
                                 
