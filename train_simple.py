@@ -83,6 +83,7 @@ if __name__ == '__main__' :
         model = simple.SimpleModel(configuration.get_number_of_classes())
         process_fun = imgproc.process_mnist
 
+    process_fun = imgproc.process_sketch
     #resnet_50. If use_bottleneck = False, then it is resnet_34
     model = resnet.ResNet([3,4,6,3],[64,128,256,512], configuration.get_number_of_classes(), use_bottleneck = False)
     #build the model indicating the input shape
