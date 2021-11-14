@@ -1,3 +1,4 @@
+import sys
 from tarea1 import mapping
 from tarea1.mapping import animals
 
@@ -5,4 +6,25 @@ if __name__ == '__main__':
     for (i, item) in enumerate(animals):
         print(f"{i}->'{item}'")
 
-print (animals[1:])
+
+def get_animal(path_str):
+    if not path_str:
+        sys.exit('empty string')
+    if "/" not in path_str:
+        sys.exit('invalid string')
+    count = path_str.count("/")
+    if count < 2:
+        sys.exit('invalid string 2')
+    splitted = path_str.split("/")
+    return splitted[len(splitted) - 2].strip().lower()
+
+
+print(get_animal('data/test_images/bee/026_00119802.jpg'))
+print(get_animal('/content/convnet2/data/test_images/bee/026_00119695.jpg'))
+print(get_animal('/content/convnet2/data/test_images/cow/081_00122082.jpg'))
+print(get_animal('/content/convnet2/data/test_images/sheep/258_00124921.jpg'))
+print(get_animal('/content/convnet2/data/test_images/cat/064_00122151.jpg'))
+print(get_animal('/content/convnet2/data/test_images/crocodile/084_00126855.jpg'))
+print(get_animal('a//'))
+print(get_animal('/content/convnet2/data/test_images/crab/082_00125929.jpg'))
+print(get_animal('/content/convnet2/data/test_images/elephant/103_00125872.jpg'))

@@ -140,11 +140,38 @@ class SSearch:
     # unit test
 
 
+def get_animal(path_str):
+    if not path_str:
+        sys.exit('empty string')
+    if "/" not in path_str:
+        sys.exit('invalid string')
+    count = path_str.count("/")
+    if count < 2:
+        sys.exit('invalid string 2')
+    splitted = path_str.split("/")
+    return splitted[len(splitted) - 2].strip().lower()
+
+
+def mAP(fquery):
+    im_query = ssearch.read_image(fquery)
+    idx = ssearch.search(im_query)
+    animal = get_animal(fquery)
+    print(f"idx={idx} len={len(idx)} animal='{animal}'")
+    r_filenames = ssearch.get_filenames(idx)
+    r_filenames.insert(0, fquery)
+    for ix, filepath in enumerate(r_filenames):
+        if ix == 0:
+            continue
+        animal2 = get_animal(filepath)
+        print(f"ix={ix}, file path='{filepath}', matches? {animal == animal2}")
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Similarity Search")
     parser.add_argument("-config", type=str, help="<str> configuration file", required=True)
     parser.add_argument("-name", type=str, help=" name of section in the configuration file", required=True)
-    parser.add_argument("-mode", type=str, choices=['search', 'compute', 'tarea1'], help=" mode of operation", required=True)
+    parser.add_argument("-mode", type=str, choices=['search', 'compute', 'tarea1'], help=" mode of operation",
+                        required=True)
     parser.add_argument("-list", type=str, help=" list of image to process", required=False)
     parser.add_argument("-odir", type=str, help=" output dir", required=False, default='.')
     pargs = parser.parse_args()
@@ -192,20 +219,4 @@ if __name__ == '__main__':
     if pargs.mode == 'tarea1':
         ssearch.load_features()
         fquery = '/content/convnet2/data/test_images/cat/064_00122151.jpg'
-        im_query = ssearch.read_image(fquery)
-        idx = ssearch.search(im_query)
-        print(f"idx={idx}")
-        r_filenames = ssearch.get_filenames(idx)
-        r_filenames.insert(0, fquery)
-        to_draw = []
-        counter = 0
-        for ix, filepath in enumerate(r_filenames):
-            print(f"ix={ix}, file path='{filepath}'")
-            if counter < 40:
-                to_draw.append(filepath)
-            counter = counter + 1
-        image_r = ssearch.draw_result(to_draw)
-        output_name = os.path.basename(fquery) + '_result.png'
-        output_name = os.path.join(pargs.odir, output_name)
-        io.imsave(output_name, image_r)
-        print('result saved at {}'.format(output_name))
+        mAP(fquery)
