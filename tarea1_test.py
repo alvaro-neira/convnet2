@@ -47,3 +47,8 @@ print(ap_dict)
 print(p1_dict)
 
 print(f"mean={statistics.mean(ap_dict['cat'])}")
+
+# Recall
+recall = [*range(0, 101, 10)]
+recall = [i / 100 for i in recall]
+

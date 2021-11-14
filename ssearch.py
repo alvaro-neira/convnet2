@@ -18,6 +18,7 @@ import os
 import argparse
 import numpy as np
 import statistics
+import math
 
 
 class SSearch:
@@ -216,7 +217,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Similarity Search")
     parser.add_argument("-config", type=str, help="<str> configuration file", required=True)
     parser.add_argument("-name", type=str, help=" name of section in the configuration file", required=True)
-    parser.add_argument("-mode", type=str, choices=['search', 'compute', 'tarea1'], help=" mode of operation",
+    parser.add_argument("-mode", type=str, choices=['search', 'compute', 'tarea1', 'chart'], help=" mode of operation",
                         required=True)
     parser.add_argument("-list", type=str, help=" list of image to process", required=False)
     parser.add_argument("-odir", type=str, help=" output dir", required=False, default='.')
@@ -288,3 +289,101 @@ if __name__ == '__main__':
         for animal, arr in ap_dict.items():
             print(f"{animal},{statistics.mean(arr)}")
         print(f"END IMPORTANT")
+
+    if pargs.mode == 'chart':
+        ssearch.load_features()
+        mapping_dict = {'sheep': 0, 'bear': 1, 'bee': 2, 'cat': 3, 'camel': 4, 'cow': 5,
+                        'crab': 6, 'crocodile': 7, 'duck': 8, 'elephant': 9, 'dog': 10, 'giraffe': 11}
+        # Recall
+        recall = [*range(0, 101, 10)]
+        recall = [i / 100 for i in recall]
+
+        file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
+        mAP = []
+        prec_at_1 = []
+        precision_recall = [0] * 11
+        precision_recall[0] = 1
+        for animal in mapping_dict:
+            AP_animal = []
+            q = 0
+            at_1 = []
+            nquerys_animal = 0
+            Lines = file1.readlines()
+            for line in Lines:
+                fquery = line.strip()
+                cat_fquery = get_animal(fquery)
+                if animal == cat_fquery:
+                    im_query = ssearch.read_image(fquery)
+                    idx = ssearch.search(im_query)
+                    r_filenames = ssearch.get_filenames(idx)
+                    # r_filenames.insert(0, fquery)
+                    relevantes = 0
+                    nquerys_animal += 1
+                    prec = 0
+                    for ix, cat in enumerate(r_filenames):
+                        rank_pos = ix + 1
+
+                        if cat.split("/")[2] == cat_fquery:
+                            relevantes += 1
+                            prec += relevantes / rank_pos
+                            if relevantes == 1:
+                                at_1.append(relevantes / rank_pos)
+                    # Agregar a una lista el average precision, suma de precision sobre los relevantes
+                    AP_animal.append(prec / relevantes)
+                    # print(AP[q])
+                    q += 1
+            # Para obtener recall y precision en cada valor
+            relevantes_total = relevantes
+            relevantes_recall = [math.floor(i * relevantes_total) for i in recall]
+            Lines = file1.readlines()
+            for line in Lines:
+                fquery = line.strip()
+                cat_fquery = get_animal(fquery)
+                # Repetir cálculo de la precisión por recall
+                if animal == cat_fquery:
+                    im_query = ssearch.read_image(fquery)
+                    idx = ssearch.search(im_query)
+                    r_filenames = ssearch.get_filenames(idx)
+                    # r_filenames.insert(0, fquery)
+                    relev_recall_fquery = 0
+                    recall_count = 1
+                    # nquerys_animal +=1
+                    # prec_recall = 0
+                    for ix, cat in enumerate(r_filenames):
+                        rank_pos = ix + 1
+
+                        if cat.split("/")[2] == cat_fquery:
+                            relev_recall_fquery += 1
+                            if relev_recall_fquery == relevantes_recall[recall_count]:
+                                prec_recall = relev_recall_fquery / rank_pos
+                                precision_recall[recall_count] += prec_recall
+                                recall_count += 1
+                            # if relevantes == 1:
+                            # at_1.append(relevantes/rank_pos)
+                    # Agregar a una lista el average precision, suma de precision sobre los relevantes
+                    # AP_animal.append(prec/relevantes)
+                    # print(AP[q])
+                    # q += 1
+            prec_at_1_animal = sum(at_1) / len(at_1)
+            mAP_animal = sum(AP_animal) / len(AP_animal)
+            print('mAP: ', animal, mAP_animal)
+            print('p@1: ', animal, prec_at_1_animal)
+            prec_at_1.append(prec_at_1_animal)
+            mAP.append(mAP_animal)
+        prec_at_1_total = sum(prec_at_1) / len(prec_at_1)
+        mAP_total = sum(mAP) / len(mAP)
+        print('mAP total: ', mAP_total)
+        print('p@1 total: ', prec_at_1_total)
+        precision_recall = [i / len(filenames) for i in precision_recall]
+        precision_recall[0] = 1
+        print('precision: ', precision_recall)
+        print('recall: ', recall)
+
+        # average precision = suma de las precisiones de los relevantes sobre todos los relevantes
+        # cat_fquery.append(cat.split("/")[2])
+        # print(fquery, r_filenames[:3], cat_fquery[:3])
+        # image_r= ssearch.draw_result(r_filenames)
+        # output_name = os.path.basename(fquery) + '_result.png'
+        # output_name = os.path.join(pargs.odir, output_name)
+        # io.imsave(output_name, image_r)
+        # print('result saved at {}'.format(output_name))
