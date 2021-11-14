@@ -1,4 +1,10 @@
+#
+# WARNING: highly unefficient, with code redundancy. It's only to get the data once for a homework.
+#
+
 import sys
+
+from tarea1.mapping import animals
 
 sys.path.append("/content/convnet2")
 import tensorflow as tf
@@ -11,6 +17,7 @@ import skimage.transform as trans
 import os
 import argparse
 import numpy as np
+import statistics
 
 
 class SSearch:
@@ -152,7 +159,7 @@ def get_animal(path_str):
     return splitted[len(splitted) - 2].strip().lower()
 
 
-def AP(fquery):
+def AP(ap_dict, fquery):
     im_query = ssearch.read_image(fquery)
     idx = ssearch.search(im_query)
     animal = get_animal(fquery)
@@ -182,7 +189,7 @@ def AP(fquery):
     return ap
 
 
-def precision_at_1(fquery):
+def precision_at_1(p1_dict, fquery):
     im_query = ssearch.read_image(fquery)
     idx = ssearch.search(im_query)
     animal = get_animal(fquery)
@@ -192,15 +199,20 @@ def precision_at_1(fquery):
     animal2 = get_animal(r_filenames[1])
     total = total + 1
     if animal == animal2:
-        return 100.0
+        p1_dict['total'].append(100.0)
+        p1_dict[animal].append(100.0)
+        return
     for count, filepath in enumerate(r_filenames):
         if count < 2:
             continue
         animal2 = get_animal(filepath)
         total = total + 1
         if animal == animal2:
-            return 100.0 * 1 / count
-    return 0.0
+            p1_dict['total'].append(100.0 * 1 / count)
+            p1_dict[animal].append(100.0 * 1 / count)
+            return
+    p1_dict['total'].append(0.0)
+    p1_dict[animal].append(0.0)
 
 
 if __name__ == '__main__':
@@ -255,10 +267,24 @@ if __name__ == '__main__':
 
     if pargs.mode == 'tarea1':
         ssearch.load_features()
+        ap_dict = {'total': []}
+        p1_dict = {'total': []}
+        for (i, animal) in enumerate(animals):
+            ap_dict[animal] = []
+            p1_dict[animal] = []
+
         file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
         Lines = file1.readlines()
         counter = 0
         for line in Lines:
             fpath = line.strip()
-            print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)},{precision_at_1(fpath)}")
+            print(f"{counter}")
+            # print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)},{precision_at_1(fpath)}")
+            # AP(ap_dict, fpath)
+            precision_at_1(p1_dict, fpath)
             counter = counter + 1
+
+        print(f"THIS IS IMPORTANT")
+        for animal, arr in p1_dict.items():
+            print(f"{animal},{statistics.mean(arr)}")
+        print(f"END IMPORTANT")
