@@ -3,4 +3,6 @@ from ssearch import SSearch
 
 ssearch = SSearch('./configs/aneira_tfr.config', "SKETCH")
 
-# ssearch.filenames[:5]
+ssearch.load_features()
+
+ssearch.filenames[:5]

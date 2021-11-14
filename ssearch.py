@@ -93,7 +93,7 @@ class SSearch:
         #This is cosine distance
         idx_sorted = np.argsort(-sim)
         #idx_sorted = np.argsort(d)
-        return idx_sorted[1:91]
+        return idx_sorted[1:]
 
     def compute_features_from_catalog(self):
         n_batch = self.configuration.get_batch_size()
@@ -188,3 +188,19 @@ if __name__ == '__main__':
                 io.imsave(output_name, image_r)
                 print('result saved at {}'.format(output_name))
                 fquery = input('Query:')
+
+    if pargs.mode == 'tarea1':
+        ssearch.load_features()
+        fquery='/content/convnet2/data/test_images/crab/082_00125929.jpg'
+        im_query = ssearch.read_image(fquery)
+        idx = ssearch.search(im_query)
+        # print(idx)
+        r_filenames = ssearch.get_filenames(idx)
+        r_filenames.insert(0, fquery)
+        #             for f in r_filenames :
+        #                 print(f)
+        image_r = ssearch.draw_result(r_filenames)
+        output_name = os.path.basename(fquery) + '_result.png'
+        output_name = os.path.join(pargs.odir, output_name)
+        io.imsave(output_name, image_r)
+        print('result saved at {}'.format(output_name))
