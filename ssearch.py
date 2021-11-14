@@ -191,7 +191,7 @@ if __name__ == '__main__':
 
     if pargs.mode == 'tarea1':
         ssearch.load_features()
-        fquery = '/content/convnet2/data/test_images/crab/082_00125929.jpg'
+        fquery = '/content/convnet2/data/test_images/cat/064_00122151.jpg'
         im_query = ssearch.read_image(fquery)
         idx = ssearch.search(im_query)
         print(f"idx={idx}")
