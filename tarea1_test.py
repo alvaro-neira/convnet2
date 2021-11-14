@@ -1,6 +1,7 @@
 import sys
 from tarea1 import mapping
 from tarea1.mapping import animals
+import random
 
 if __name__ == '__main__':
     for (i, item) in enumerate(animals):
@@ -29,5 +30,12 @@ print(get_animal('a//'))
 print(get_animal('/content/convnet2/data/test_images/crab/082_00125929.jpg'))
 print(get_animal('/content/convnet2/data/test_images/elephant/103_00125872.jpg'))
 
-arr=['/content/convnet2/data/test_images/cat/064_00122151.jpg', 'data/test_images/crab/082_00125736.jpg', 'data/test_images/cat/064_00122174.jpg', 'data/test_images/cat/064_00122190.jpg', 'data/test_images/bee/026_00119842.jpg', 'data/test_images/cat/064_00122063.jpg', 'data/test_images/crab/082_00125813.jpg', 'data/test_images/cat/064_00122032.jpg', 'data/test_images/cat/064_00122140.jpg', 'data/test_images/cat/064_00122110.jpg']
+arr = ['/content/convnet2/data/test_images/cat/064_00122151.jpg', 'data/test_images/crab/082_00125736.jpg',
+       'data/test_images/cat/064_00122174.jpg', 'data/test_images/cat/064_00122190.jpg',
+       'data/test_images/bee/026_00119842.jpg', 'data/test_images/cat/064_00122063.jpg',
+       'data/test_images/crab/082_00125813.jpg', 'data/test_images/cat/064_00122032.jpg',
+       'data/test_images/cat/064_00122140.jpg', 'data/test_images/cat/064_00122110.jpg']
 
+lines = open('/Users/aneira/tarea1/catalog.txt').read().splitlines()
+myline = random.choice(lines).strip()
+print(myline)

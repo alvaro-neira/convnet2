@@ -11,6 +11,7 @@ import skimage.transform as trans
 import os
 import argparse
 import numpy as np
+import random
 
 
 class SSearch:
@@ -184,18 +185,18 @@ if __name__ == '__main__':
                 io.imsave(output_name, image_r)
                 print('result saved at {}'.format(output_name))
         else:
-            fquery = input('Query:')
-            while fquery != 'quit':
-                im_query = ssearch.read_image(fquery)
-                idx = ssearch.search(im_query)
-                # print(idx)
-                r_filenames = ssearch.get_filenames(idx)
-                r_filenames.insert(0, fquery)
-                for f in r_filenames:
-                    print(f)
-                image_r = ssearch.draw_result(r_filenames)
-                output_name = os.path.basename(fquery) + '_result.png'
-                output_name = os.path.join(pargs.odir, output_name)
-                io.imsave(output_name, image_r)
-                print('result saved at {}'.format(output_name))
-                fquery = input('Query:')
+            lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
+            myline = random.choice(lines)
+            fquery = myline.strip()
+            im_query = ssearch.read_image(fquery)
+            idx = ssearch.search(im_query)
+            # print(idx)
+            r_filenames = ssearch.get_filenames(idx)
+            r_filenames.insert(0, fquery)
+            for f in r_filenames:
+                print(f)
+            image_r = ssearch.draw_result(r_filenames)
+            output_name = os.path.basename(fquery) + '_result.png'
+            output_name = os.path.join(pargs.odir, output_name)
+            io.imsave(output_name, image_r)
+            print('result saved at {}'.format(output_name))
