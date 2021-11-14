@@ -239,5 +239,6 @@ if __name__ == '__main__':
         counter = 0
         for line in Lines:
             fpath = line.strip()
-            print(f"{counter},{fpath},{get_animal(fpath)}")
+            print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)}")
+            counter = counter + 1
         # AP(fquery)
