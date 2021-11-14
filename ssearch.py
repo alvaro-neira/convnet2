@@ -89,28 +89,25 @@ class SSearch:
         data = data / np.transpose(norm)
         return data
 
-    #    def search_euclidian(self, im_query):
-    #        assert self.enable_search, 'search is not allowed'
-    #        q_fv = self.compute_features(im_query, expand_dims = True)
-    #        sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
-    #        sim = np.reshape(sim, (-1))
-    #        #it seems that Euclidean performs better than cosine
-    #        d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis = 1))
-    #        idx_sorted = np.argsort(-sim)
-    #        # idx_sorted = np.argsort(d)
-    #        return idx_sorted[:90]
-
+    # Euclidian
     def search(self, im_query):
         assert self.enable_search, 'search is not allowed'
         q_fv = self.compute_features(im_query, expand_dims=True)
-        sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
-        sim = np.reshape(sim, (-1))
-        # it seems that Euclidean performs better than cosine
-        # d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
-        # This is cosine distance
-        idx_sorted = np.argsort(-sim)
-        # idx_sorted = np.argsort(d)
+        d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
+        idx_sorted = np.argsort(d)
         return idx_sorted[:90]
+
+        # def search_cosine(self, im_query):
+        #    assert self.enable_search, 'search is not allowed'
+        #    q_fv = self.compute_features(im_query, expand_dims=True)
+        #    sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
+        #    sim = np.reshape(sim, (-1))
+        #    # it seems that Euclidean performs better than cosine
+        #    # d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
+        #    # This is cosine distance
+        #    idx_sorted = np.argsort(-sim)
+        #    # idx_sorted = np.argsort(d)
+        #    return idx_sorted[:90]
 
     def compute_features_from_catalog(self):
         n_batch = self.configuration.get_batch_size()
