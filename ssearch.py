@@ -178,7 +178,7 @@ def AP(fquery):
             n_relevants = n_relevants + 1
             new_p = 100.0 * n_relevants / ix
             ap = (ap * (n_relevants - 1) + new_p) / n_relevants
-    print(f"'{animal}',n_relevants={n_relevants},total={total},gross presicion={100.0 * n_relevants / total},ap={ap}")
+    print(f"'{animal}',n_relevants={n_relevants},total={total},gross precision={100.0 * n_relevants / total},ap={ap}")
     return ap
 
 
@@ -234,5 +234,5 @@ if __name__ == '__main__':
 
     if pargs.mode == 'tarea1':
         ssearch.load_features()
-        fquery = '/content/convnet2/data/test_images/giraffe/129_00126181.jpg'
+        fquery = '/content/convnet2/data/test_images/cat/064_00122151.jpg'
         AP(fquery)
