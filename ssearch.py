@@ -187,7 +187,7 @@ if __name__ == '__main__':
         else:
             # lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
             # myline = random.choice(lines)
-            fquery = '/content/convnet2/data/test_images/cow/081_00121885.jpg'
+            fquery = '/content/convnet2/data/test_images/dog/091_00150965.jpg'
             im_query = ssearch.read_image(fquery)
             idx = ssearch.search(im_query)
             # print(idx)
