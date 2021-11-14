@@ -185,9 +185,9 @@ if __name__ == '__main__':
                 io.imsave(output_name, image_r)
                 print('result saved at {}'.format(output_name))
         else:
-            lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
-            myline = random.choice(lines)
-            fquery = myline.strip()
+            # lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
+            # myline = random.choice(lines)
+            fquery = '/content/convnet2/data/test_images/cow/081_00121885.jpg'
             im_query = ssearch.read_image(fquery)
             idx = ssearch.search(im_query)
             # print(idx)
