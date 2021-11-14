@@ -89,10 +89,10 @@ class SSearch:
         sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
         sim = np.reshape(sim, (-1))
         # it seems that Euclidean performs better than cosine
-        #d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
-        #This is cosine distance
+        # d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
+        # This is cosine distance
         idx_sorted = np.argsort(-sim)
-        #idx_sorted = np.argsort(d)
+        # idx_sorted = np.argsort(d)
         return idx_sorted[1:]
 
     def compute_features_from_catalog(self):
@@ -191,15 +191,20 @@ if __name__ == '__main__':
 
     if pargs.mode == 'tarea1':
         ssearch.load_features()
-        fquery='/content/convnet2/data/test_images/crab/082_00125929.jpg'
+        fquery = '/content/convnet2/data/test_images/crab/082_00125929.jpg'
         im_query = ssearch.read_image(fquery)
         idx = ssearch.search(im_query)
-        # print(idx)
+        print(f"idx={idx}")
         r_filenames = ssearch.get_filenames(idx)
         r_filenames.insert(0, fquery)
-        #             for f in r_filenames :
-        #                 print(f)
-        image_r = ssearch.draw_result(r_filenames)
+        to_draw = []
+        counter = 0
+        for ix, filepath in enumerate(r_filenames):
+            print(f"ix={ix}, file path='{filepath}'")
+            if counter < 40:
+                to_draw.append(filepath)
+            counter = counter + 1
+        image_r = ssearch.draw_result(to_draw)
         output_name = os.path.basename(fquery) + '_result.png'
         output_name = os.path.join(pargs.odir, output_name)
         io.imsave(output_name, image_r)
