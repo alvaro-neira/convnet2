@@ -124,7 +124,7 @@ if __name__ == '__main__':
     elif pargs.mode == 'predict':
         # lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
         # myline = random.choice(lines)
-        filename = '/content/convnet2/data/test_images/elephant/103_00125775.jpg'
+        filename = '/content/convnet2/data/test_images/giraffe/129_00125984.jpg'
         target_size = (configuration.get_image_height(), configuration.get_image_width())
         image = process_fun(data.read_image(filename, configuration.get_number_of_channels()), target_size)
         image = image - mean_image
