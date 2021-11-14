@@ -167,8 +167,6 @@ def AP(ap_dict, fquery):
     r_filenames.insert(0, fquery)
     total = 0
     n_relevants = 0
-    # print(r_filenames[:10])
-    # print(f"'{animal}'")
     animal2 = get_animal(r_filenames[1])
     total = total + 1
     ap = 0.0
@@ -179,14 +177,13 @@ def AP(ap_dict, fquery):
         if ix < 2:
             continue
         animal2 = get_animal(filepath)
-        # print(f"ix={ix},ap={ap}, file path='{filepath}', matches? {animal == animal2}")
         total = total + 1
         if animal == animal2:
             n_relevants = n_relevants + 1
             new_p = 100.0 * n_relevants / ix
             ap = (ap * (n_relevants - 1) + new_p) / n_relevants
-    # print(f"'{animal}',n_relevants={n_relevants},total={total},gross precision={100.0 * n_relevants / total},ap={ap}")
-    return ap
+    ap_dict['total'].append(ap)
+    ap_dict[animal].append(ap)
 
 
 def precision_at_1(p1_dict, fquery):
@@ -280,11 +277,14 @@ if __name__ == '__main__':
             fpath = line.strip()
             print(f"{counter}")
             # print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)},{precision_at_1(fpath)}")
-            # AP(ap_dict, fpath)
+            AP(ap_dict, fpath)
             precision_at_1(p1_dict, fpath)
             counter = counter + 1
 
-        print(f"THIS IS IMPORTANT")
+        print(f"THIS IS PRECISION AT 1")
         for animal, arr in p1_dict.items():
+            print(f"{animal},{statistics.mean(arr)}")
+        print(f"THIS IS mAP")
+        for animal, arr in ap_dict.items():
             print(f"{animal},{statistics.mean(arr)}")
         print(f"END IMPORTANT")
