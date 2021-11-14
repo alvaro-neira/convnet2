@@ -113,7 +113,7 @@ if __name__ == '__main__' :
 
     elif pargs.mode == 'predict':
         filename = input('file :')
-        while(filename != 'end') :
+        while(filename != 'quit') :
             target_size = (configuration.get_image_height(), configuration.get_image_width())
             image = process_fun(data.read_image(filename, configuration.get_number_of_channels()), target_size )
             image = image - mean_image
