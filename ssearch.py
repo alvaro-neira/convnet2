@@ -298,16 +298,18 @@ if __name__ == '__main__':
         recall = [*range(0, 101, 10)]
         recall = [i / 100 for i in recall]
 
-        file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
         mAP = []
         prec_at_1 = []
         precision_recall = [0] * 11
         precision_recall[0] = 1
+        len_filenames = 2399
         for animal in mapping_dict:
             AP_animal = []
             q = 0
             at_1 = []
             nquerys_animal = 0
+            print(f"animal='{animal}'")
+            file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
             Lines = file1.readlines()
             for line in Lines:
                 fquery = line.strip()
@@ -323,7 +325,7 @@ if __name__ == '__main__':
                     for ix, cat in enumerate(r_filenames):
                         rank_pos = ix + 1
 
-                        if cat.split("/")[2] == cat_fquery:
+                        if get_animal(cat) == cat_fquery:
                             relevantes += 1
                             prec += relevantes / rank_pos
                             if relevantes == 1:
@@ -335,9 +337,11 @@ if __name__ == '__main__':
             # Para obtener recall y precision en cada valor
             relevantes_total = relevantes
             relevantes_recall = [math.floor(i * relevantes_total) for i in recall]
-            Lines = file1.readlines()
-            for line in Lines:
+            file2 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
+            Lines2 = file2.readlines()
+            for line in Lines2:
                 fquery = line.strip()
+                # print(f"fquery2='{fquery}'")
                 cat_fquery = get_animal(fquery)
                 # Repetir cálculo de la precisión por recall
                 if animal == cat_fquery:
@@ -352,7 +356,7 @@ if __name__ == '__main__':
                     for ix, cat in enumerate(r_filenames):
                         rank_pos = ix + 1
 
-                        if cat.split("/")[2] == cat_fquery:
+                        if get_animal(cat) == cat_fquery:
                             relev_recall_fquery += 1
                             if relev_recall_fquery == relevantes_recall[recall_count]:
                                 prec_recall = relev_recall_fquery / rank_pos
@@ -364,8 +368,16 @@ if __name__ == '__main__':
                     # AP_animal.append(prec/relevantes)
                     # print(AP[q])
                     # q += 1
-            prec_at_1_animal = sum(at_1) / len(at_1)
-            mAP_animal = sum(AP_animal) / len(AP_animal)
+            if len(at_1) == 0:
+                prec_at_1_animal = 0.0
+            else:
+                prec_at_1_animal = sum(at_1) / len(at_1)
+
+            if len(at_1) == 0:
+                mAP_animal = 0
+            else:
+                mAP_animal = sum(AP_animal) / len(AP_animal)
+
             print('mAP: ', animal, mAP_animal)
             print('p@1: ', animal, prec_at_1_animal)
             prec_at_1.append(prec_at_1_animal)
@@ -374,7 +386,7 @@ if __name__ == '__main__':
         mAP_total = sum(mAP) / len(mAP)
         print('mAP total: ', mAP_total)
         print('p@1 total: ', prec_at_1_total)
-        precision_recall = [i / len(filenames) for i in precision_recall]
+        precision_recall = [i / len_filenames for i in precision_recall]
         precision_recall[0] = 1
         print('precision: ', precision_recall)
         print('recall: ', recall)
