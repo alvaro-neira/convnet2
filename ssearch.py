@@ -182,6 +182,27 @@ def AP(fquery):
     return ap
 
 
+def precision_at_1(fquery):
+    im_query = ssearch.read_image(fquery)
+    idx = ssearch.search(im_query)
+    animal = get_animal(fquery)
+    r_filenames = ssearch.get_filenames(idx)
+    r_filenames.insert(0, fquery)
+    total = 0
+    animal2 = get_animal(r_filenames[1])
+    total = total + 1
+    if animal == animal2:
+        return 100.0
+    for count, filepath in enumerate(r_filenames):
+        if count < 2:
+            continue
+        animal2 = get_animal(filepath)
+        total = total + 1
+        if animal == animal2:
+            return 100.0 * 1 / count
+    return 0.0
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Similarity Search")
     parser.add_argument("-config", type=str, help="<str> configuration file", required=True)
@@ -239,6 +260,5 @@ if __name__ == '__main__':
         counter = 0
         for line in Lines:
             fpath = line.strip()
-            print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)}")
+            print(f"{counter},{get_animal(fpath)},{fpath},{AP(fpath)},{precision_at_1(fpath)}")
             counter = counter + 1
-        # AP(fquery)
