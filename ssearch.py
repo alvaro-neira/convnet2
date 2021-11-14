@@ -152,7 +152,7 @@ def get_animal(path_str):
     return splitted[len(splitted) - 2].strip().lower()
 
 
-def mAP(fquery):
+def AP(fquery):
     im_query = ssearch.read_image(fquery)
     idx = ssearch.search(im_query)
     animal = get_animal(fquery)
@@ -179,6 +179,7 @@ def mAP(fquery):
             new_p = 100.0 * n_relevants / ix
             ap = (ap * (n_relevants - 1) + new_p) / n_relevants
     print(f"'{animal}',n_relevants={n_relevants},total={total},gross presicion={100.0 * n_relevants / total},ap={ap}")
+    return ap
 
 
 if __name__ == '__main__':
@@ -234,4 +235,4 @@ if __name__ == '__main__':
     if pargs.mode == 'tarea1':
         ssearch.load_features()
         fquery = '/content/convnet2/data/test_images/cat/064_00122151.jpg'
-        mAP(fquery)
+        AP(fquery)
