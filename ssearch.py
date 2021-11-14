@@ -160,7 +160,8 @@ def mAP(fquery):
     r_filenames.insert(0, fquery)
     total = 0
     n_relevants = 0
-
+    print(r_filenames[:10])
+    print(f"'{animal}'")
     animal2 = get_animal(r_filenames[1])
     total = total + 1
     ap = 0.0
@@ -171,7 +172,7 @@ def mAP(fquery):
         if ix < 2:
             continue
         animal2 = get_animal(filepath)
-        print(f"ix={ap}, file path='{filepath}', matches? {animal == animal2}")
+        print(f"ix={ix},ap={ap}, file path='{filepath}', matches? {animal == animal2}")
         total = total + 1
         if animal == animal2:
             n_relevants = n_relevants + 1
