@@ -160,8 +160,8 @@ def AP(fquery):
     r_filenames.insert(0, fquery)
     total = 0
     n_relevants = 0
-    print(r_filenames[:10])
-    print(f"'{animal}'")
+    # print(r_filenames[:10])
+    # print(f"'{animal}'")
     animal2 = get_animal(r_filenames[1])
     total = total + 1
     ap = 0.0
@@ -172,13 +172,13 @@ def AP(fquery):
         if ix < 2:
             continue
         animal2 = get_animal(filepath)
-        print(f"ix={ix},ap={ap}, file path='{filepath}', matches? {animal == animal2}")
+        # print(f"ix={ix},ap={ap}, file path='{filepath}', matches? {animal == animal2}")
         total = total + 1
         if animal == animal2:
             n_relevants = n_relevants + 1
             new_p = 100.0 * n_relevants / ix
             ap = (ap * (n_relevants - 1) + new_p) / n_relevants
-    print(f"'{animal}',n_relevants={n_relevants},total={total},gross precision={100.0 * n_relevants / total},ap={ap}")
+    # print(f"'{animal}',n_relevants={n_relevants},total={total},gross precision={100.0 * n_relevants / total},ap={ap}")
     return ap
 
 
@@ -234,5 +234,10 @@ if __name__ == '__main__':
 
     if pargs.mode == 'tarea1':
         ssearch.load_features()
-        fquery = '/content/convnet2/data/test_images/cat/064_00122151.jpg'
-        AP(fquery)
+        file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
+        Lines = file1.readlines()
+        counter = 0
+        for line in Lines:
+            fpath = line.strip()
+            print(f"{counter},{fpath},{get_animal(fpath)}")
+        # AP(fquery)
