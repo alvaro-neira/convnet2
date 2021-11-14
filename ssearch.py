@@ -144,7 +144,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Similarity Search")
     parser.add_argument("-config", type=str, help="<str> configuration file", required=True)
     parser.add_argument("-name", type=str, help=" name of section in the configuration file", required=True)
-    parser.add_argument("-mode", type=str, choices=['search', 'compute'], help=" mode of operation", required=True)
+    parser.add_argument("-mode", type=str, choices=['search', 'compute', 'tarea1'], help=" mode of operation", required=True)
     parser.add_argument("-list", type=str, help=" list of image to process", required=False)
     parser.add_argument("-odir", type=str, help=" output dir", required=False, default='.')
     pargs = parser.parse_args()
