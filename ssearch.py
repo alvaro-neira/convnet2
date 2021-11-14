@@ -93,7 +93,7 @@ class SSearch:
         #This is cosine distance
         idx_sorted = np.argsort(-sim)
         #idx_sorted = np.argsort(d)
-        return idx_sorted[1:]
+        return idx_sorted[1:91]
 
     def compute_features_from_catalog(self):
         n_batch = self.configuration.get_batch_size()
