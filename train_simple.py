@@ -136,7 +136,7 @@ if __name__ == '__main__':
         pred = pred / np.sum(pred)
         cla = np.argmax(pred)
         print('{} [{}]'.format(cla, pred[cla]))
-        print(f"The animal is {animals[cla]}")
+        print(f"The animal is '{animals[cla]}', the file is '{filename}'")
 
     # save the model
     if pargs.save:
