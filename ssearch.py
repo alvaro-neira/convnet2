@@ -306,7 +306,6 @@ if __name__ == '__main__':
         recall = [*range(0, 101, 10)]
         recall = [i / 100 for i in recall]
 
-        file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
         mAP = []
         prec_at_1 = []
         precision_recall = [0] * 11
@@ -316,9 +315,11 @@ if __name__ == '__main__':
             q = 0
             at_1 = []
             nquerys_animal = 0
+            file1 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
             Lines = file1.readlines()
             for line in Lines:
                 fquery = line.strip()
+                print(f"fquery1='{fquery}'")
                 cat_fquery = get_animal(fquery)
                 if animal == cat_fquery:
                     im_query = ssearch.read_image(fquery)
@@ -343,9 +344,11 @@ if __name__ == '__main__':
             # Para obtener recall y precision en cada valor
             relevantes_total = relevantes
             relevantes_recall = [math.floor(i * relevantes_total) for i in recall]
-            Lines = file1.readlines()
-            for line in Lines:
+            file2 = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt', 'r')
+            Lines2 = file2.readlines()
+            for line in Lines2:
                 fquery = line.strip()
+                print(f"fquery2='{fquery}'")
                 cat_fquery = get_animal(fquery)
                 # Repetir cálculo de la precisión por recall
                 if animal == cat_fquery:
@@ -376,7 +379,12 @@ if __name__ == '__main__':
                 prec_at_1_animal = 0.0
             else:
                 prec_at_1_animal = sum(at_1) / len(at_1)
-            mAP_animal = sum(AP_animal) / len(AP_animal)
+
+            if len(at_1) == 0:
+                mAP_animal = 0
+            else:
+                mAP_animal = sum(AP_animal) / len(AP_animal)
+
             print('mAP: ', animal, mAP_animal)
             print('p@1: ', animal, prec_at_1_animal)
             prec_at_1.append(prec_at_1_animal)
