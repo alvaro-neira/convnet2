@@ -158,17 +158,26 @@ def mAP(fquery):
     animal = get_animal(fquery)
     r_filenames = ssearch.get_filenames(idx)
     r_filenames.insert(0, fquery)
-    tp = 0
     total = 0
+    n_relevants = 0
+
+    animal2 = get_animal(r_filenames[1])
+    total = total + 1
+    ap = 0.0
+    if animal == animal2:
+        n_relevants = 1
+        ap = 100.0
     for ix, filepath in enumerate(r_filenames):
-        if ix == 0:
+        if ix < 2:
             continue
         animal2 = get_animal(filepath)
-        # print(f"ix={ix}, file path='{filepath}', matches? {animal == animal2}")
+        print(f"ix={ap}, file path='{filepath}', matches? {animal == animal2}")
         total = total + 1
         if animal == animal2:
-            tp = tp + 1
-    print(f"idx={idx} len={len(idx)} animal='{animal}' tp={tp} percentage={100.0 * tp / total}")
+            n_relevants = n_relevants + 1
+            new_p = 100.0 * n_relevants / ix
+            ap = (ap * (n_relevants - 1) + new_p) / n_relevants
+    print(f"'{animal}',n_relevants={n_relevants},total={total},gross presicion={100.0 * n_relevants / total},ap={ap}")
 
 
 if __name__ == '__main__':
