@@ -331,7 +331,7 @@ if __name__ == '__main__':
                     for ix, cat in enumerate(r_filenames):
                         rank_pos = ix + 1
 
-                        if cat.split("/")[2] == cat_fquery:
+                        if get_animal(cat) == cat_fquery:
                             relevantes += 1
                             prec += relevantes / rank_pos
                             if relevantes == 1:
@@ -360,7 +360,7 @@ if __name__ == '__main__':
                     for ix, cat in enumerate(r_filenames):
                         rank_pos = ix + 1
 
-                        if cat.split("/")[2] == cat_fquery:
+                        if get_animal(cat) == cat_fquery:
                             relev_recall_fquery += 1
                             if relev_recall_fquery == relevantes_recall[recall_count]:
                                 prec_recall = relev_recall_fquery / rank_pos
@@ -372,7 +372,10 @@ if __name__ == '__main__':
                     # AP_animal.append(prec/relevantes)
                     # print(AP[q])
                     # q += 1
-            prec_at_1_animal = sum(at_1) / len(at_1)
+            if len(at_1) == 0:
+                prec_at_1_animal = 0.0
+            else:
+                prec_at_1_animal = sum(at_1) / len(at_1)
             mAP_animal = sum(AP_animal) / len(AP_animal)
             print('mAP: ', animal, mAP_animal)
             print('p@1: ', animal, prec_at_1_animal)
