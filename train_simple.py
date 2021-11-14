@@ -122,9 +122,9 @@ if __name__ == '__main__':
                        steps=configuration.get_validation_steps())
 
     elif pargs.mode == 'predict':
-        lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
-        myline = random.choice(lines)
-        filename = myline.strip()
+        # lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
+        # myline = random.choice(lines)
+        filename = '/content/convnet2/data/test_images/camel/054_00120201.jpg'
         target_size = (configuration.get_image_height(), configuration.get_image_width())
         image = process_fun(data.read_image(filename, configuration.get_number_of_channels()), target_size)
         image = image - mean_image
