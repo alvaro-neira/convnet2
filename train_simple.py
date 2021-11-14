@@ -11,10 +11,12 @@ To use train.py, you will require to set the following parameters :
 """
 import pathlib
 import sys
+from tarea1.mapping import animals
 sys.path.append(str(pathlib.Path().absolute()))
 import tensorflow as tf
 from models import simple
 from models import alexnet
+from models import resnet
 import datasets.data as data
 import utils.configuration as conf
 import utils.losses as losses
@@ -75,7 +77,7 @@ if __name__ == '__main__' :
         save_freq = 'epoch',            
         )
     #save_freq = configuration.get_snapshot_steps())                
-    if configuration.get_model_name() == 'SKETCH' :
+    if configuration.get_model_name() in ['SKETCH', 'SBIR']:
         model = alexnet.AlexNetModel(configuration.get_number_of_classes())            
         process_fun = imgproc.process_sketch
     else:
@@ -84,8 +86,9 @@ if __name__ == '__main__' :
 
     #we make sure to use process_sketch
     process_fun = imgproc.process_sketch
-    #resnet_50
-    #model = resnet.ResNet([3,4,6,3],[64,128,256,512], configuration.get_number_of_classes(), use_bottleneck = True)
+    # resnet_50. If use_bottleneck = False, then it is resnet_34
+    model = resnet.ResNet([3, 4, 6, 3], [64, 128, 256, 512], configuration.get_number_of_classes(),
+                          use_bottleneck=False)
     #build the model indicating the input shape    
     input_image = tf.keras.Input((input_shape[0], input_shape[1], input_shape[2]), name = 'input_image')     
     model(input_image)    
@@ -112,21 +115,22 @@ if __name__ == '__main__' :
                        steps = configuration.get_validation_steps())
         
     elif pargs.mode == 'predict':
-        filename = input('file :')
-        while(filename != 'end') :
-            target_size = (configuration.get_image_height(), configuration.get_image_width())
-            image = process_fun(data.read_image(filename, configuration.get_number_of_channels()), target_size )
-            image = image - mean_image
-            image = tf.expand_dims(image, 0)        
-            pred = model.predict(image)
-            pred = pred[0]
-            #softmax to estimate probs
-            pred = np.exp(pred - max(pred))
-            pred = pred / np.sum(pred)            
-            cla = np.argmax(pred)
-            print('{} [{}]'.format(cla, pred[cla]))
-            filename = input('file :')
-    #save the model   
+        lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
+        myline = random.choice(lines)
+        filename = myline.strip()
+        target_size = (configuration.get_image_height(), configuration.get_image_width())
+        image = process_fun(data.read_image(filename, configuration.get_number_of_channels()), target_size )
+        image = image - mean_image
+        image = tf.expand_dims(image, 0)
+        pred = model.predict(image)
+        pred = pred[0]
+        #softmax to estimate probs
+        pred = np.exp(pred - max(pred))
+        pred = pred / np.sum(pred)
+        cla = np.argmax(pred)
+        print('{} [{}]'.format(cla, pred[cla]))
+        print(f"The animal is '{animals[cla]}', the file is '{filename}'")
+    #save the model
     if pargs.save :
         saved_to = os.path.join(configuration.get_data_dir(),"cnn-model")
         model.save(saved_to)
