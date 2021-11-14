@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/jsaavedr/Research/git/tensorflow-2/convnet2")
+sys.path.append("/content/convnet2")
 import tensorflow as tf
 import models.resnet as resnet
 import datasets.data as data
@@ -10,6 +10,7 @@ import skimage.transform as trans
 import os
 import argparse
 import numpy as np
+import random
 
 class SSearch :
     def __init__(self, config_file, model_name):
@@ -37,7 +38,7 @@ class SSearch :
         self.sim_model.summary()            
         print('sim_model was loaded OK')
         #defining process arch
-        self.process_fun =  imgproc.process_image
+        self.process_fun = imgproc.process_sketch
         #loading catalog
         self.ssearch_dir = os.path.join(self.configuration.get_data_dir(), 'ssearch')
         catalog_file = os.path.join(self.ssearch_dir, 'catalog.txt')        
@@ -83,15 +84,27 @@ class SSearch :
         data = data / np.transpose(norm)
         return data
  
+    #    def search_euclidian(self, im_query):
+    #        assert self.enable_search, 'search is not allowed'
+    #        q_fv = self.compute_features(im_query, expand_dims = True)
+    #        sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
+    #        sim = np.reshape(sim, (-1))
+    #        #it seems that Euclidean performs better than cosine
+    #        d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis = 1))
+    #        idx_sorted = np.argsort(-sim)
+    #        # idx_sorted = np.argsort(d)
+    #        return idx_sorted[:90]
+
     def search(self, im_query):
         assert self.enable_search, 'search is not allowed'
-        q_fv = self.compute_features(im_query, expand_dims = True)
-        #sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
-        #sim = np.reshape(sim, (-1))
-        #it seems that Euclidean performs better than cosine
-        d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis = 1))
-        #idx_sorted = np.argsort(-sim)        
-        idx_sorted = np.argsort(d)
+        q_fv = self.compute_features(im_query, expand_dims=True)
+        sim = np.matmul(self.normalize(self.features), np.transpose(self.normalize(q_fv)))
+        sim = np.reshape(sim, (-1))
+        # it seems that Euclidean performs better than cosine
+        # d = np.sqrt(np.sum(np.square(self.features - q_fv[0]), axis=1))
+        # This is cosine distance
+        idx_sorted = np.argsort(-sim)
+        # idx_sorted = np.argsort(d)
         return idx_sorted[:90]
         
                                 
@@ -170,20 +183,21 @@ if __name__ == '__main__' :
                 io.imsave(output_name, image_r)
                 print('result saved at {}'.format(output_name))                
         else :
-            fquery = input('Query:')
-            while fquery != 'quit' :
-                im_query = ssearch.read_image(fquery)
-                idx = ssearch.search(im_query)
-                #print(idx)
-                r_filenames = ssearch.get_filenames(idx)
-                r_filenames.insert(0, fquery)
-    #             for f in r_filenames :
-    #                 print(f)
-                image_r= ssearch.draw_result(r_filenames)
-                output_name = os.path.basename(fquery) + '_result.png'
-                output_name = os.path.join(pargs.odir, output_name)
-                io.imsave(output_name, image_r)
-                print('result saved at {}'.format(output_name))
-                fquery = input('Query:')
+            lines = open('/content/convnet2/data/sketch_folder/ssearch/catalog.txt').read().splitlines()
+            myline = random.choice(lines)
+            fquery = myline.strip()
+            im_query = ssearch.read_image(fquery)
+            idx = ssearch.search(im_query)
+            #print(idx)
+            r_filenames = ssearch.get_filenames(idx)
+            r_filenames.insert(0, fquery)
+            for f in r_filenames:
+                print(f)
+            image_r= ssearch.draw_result(r_filenames)
+            output_name = os.path.basename(fquery) + '_result.png'
+            output_name = os.path.join(pargs.odir, output_name)
+            io.imsave(output_name, image_r)
+            print('result saved at {}'.format(output_name))
+
         
         
